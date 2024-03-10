@@ -1,10 +1,7 @@
 <template>
-    <span id="wrapper-canvas"
-    @click="addCircle" 
-    @mousedown="handleMouseDown"
-    @mouseup="handleMouseUp"></span>
-<button @click="() => onReset()">Clear</button>
-<button @click="() => onPause()">Pause</button>
+    <button @click="() => onReset()">Clear</button>
+    <button @click="() => onPause()">Pause</button>
+    <span id="wrapper-canvas" @click="addCircle" @mousedown="handleMouseDown" @mouseup="handleMouseUp"></span>
     
 </template>
 
@@ -21,9 +18,9 @@ type CanvasProps = {
 defineProps<CanvasProps>()
 
 let engine = ref(Engine.create())
-let canvas = ref<HTMLCanvasElement | null>(null)
+let canvas = ref<HTMLCanvasElement | undefined>()
 let isMouseDown = ref(false)
-let renderRef = ref<typeof Render | null>(null)
+let renderRef = ref<typeof Render | undefined>()
 
 const handleMouseDown = (e: MouseEvent) => {
         isMouseDown.value = true
@@ -34,8 +31,23 @@ const handleMouseUp = () => {
 
 onMounted(() => {
     const canvasWrapper = document.getElementById('wrapper-canvas');
-    canvas.value = canvasWrapper
-    renderRef.value = init(canvas?.value, engine.value)
+    canvas.value = canvasWrapper as HTMLDivElement;
+
+    let renderOptions = {
+        width: window.innerWidth,
+        height: window.innerHeight,
+        enabled: true,
+        wireframes: false,
+        pixelRatio: 1,
+        background: '#fafafa',
+        wireframeBackground: '#222',
+        hasBounds: true,
+        showDebug: true,
+        showStats: true,
+        showPerformance: true,
+    }
+
+    renderRef.value = init(canvas?.value, engine.value, renderOptions)
 
     const shelfColor = getRandomColor()
 
@@ -70,6 +82,7 @@ onMounted(() => {
 
 const onReset =() => {
     clear(renderRef?.value, engine.value.world, engine.value)
+    init(canvas?.value, engine.value, {})
 }
 
 const onPause = () => {

@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h1>Matter.js experiments</h1>
     <NuxtLink to="/things">Things rolling down 2 shelves</NuxtLink>
     <NuxtPage/>
   </div>
