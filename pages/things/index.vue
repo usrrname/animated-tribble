@@ -42,6 +42,7 @@ onMounted(() => {
     // Shapes 
 
     let boxA = Bodies.rectangle(240, 200, 100, 80);
+
     let boxB = Bodies.rectangle(450, 50, 80, 80);
 
     let polygonA = Bodies.polygon(100, 40, 8, 18);
@@ -52,7 +53,9 @@ onMounted(() => {
     
     let ground = Bodies.rectangle(500, 750, window.innerWidth, 40, { isStatic: true });
 
-    const shapes = [polygonA, boxA, boxB, shelfA, shelfB, ground]
+    const { mouseConstraint } = useMouseConstraint(renderRef.value, engine.value)
+    
+    const shapes = [polygonA, boxA, boxB, shelfA, shelfB, ground, mouseConstraint]
 
     let { stop, composite, render } = useRenderer(shapes, renderRef.value, engine.value)
 
@@ -70,7 +73,7 @@ const onReset =() => {
 }
 
 const onPause = () => {
-    renderRef?.value?.stop();
+    renderRef?.value?.stop(renderRef?.value);
 }
 
 const addCircle = (e: MouseEvent) => {
