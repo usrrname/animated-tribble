@@ -1,39 +1,22 @@
 <template>
     <button @click="() => onReset()">Clear</button>
     <button @click="() => onPause()">Pause</button>
-    <span id="wrapper-canvas" @click="addCircle" @mousedown="handleMouseDown" @mouseup="handleMouseUp"></span>
+    <span id="wrapper-canvas" @click="addCircle" @mousedown="handleMouseDown" @mouseup="handleMouseUp" ref="canvas"></span>
     
 </template>
 
 <script lang="ts" setup>
-
+import type { CanvasProps } from '~/types';
 let { Engine, World, Render, Bodies } = constants;
-
-type CanvasProps = {
-    id?: string
-    ref?: HTMLCanvasElement
-    testId?: string
-}
 
 defineProps<CanvasProps>()
 
 let engine = ref(Engine.create())
-let canvas = ref<HTMLCanvasElement | undefined>()
+let canvasWrapper = ref<HTMLCanvasElement | undefined>()
 let isMouseDown = ref(false)
 let renderRef = ref<typeof Render | undefined>()
 
-const handleMouseDown = (e: MouseEvent) => {
-        isMouseDown.value = true
-}
-const handleMouseUp = () => {
-        isMouseDown.value = false
-}
-
-onMounted(() => {
-    const canvasWrapper = document.getElementById('wrapper-canvas');
-    canvas.value = canvasWrapper as HTMLDivElement;
-
-    let renderOptions = {
+let renderOptions = {
         width: window.innerWidth,
         height: window.innerHeight,
         enabled: true,
@@ -45,7 +28,18 @@ onMounted(() => {
         showDebug: true,
         showStats: true,
         showPerformance: true,
-    }
+}
+    
+const handleMouseDown = (e: MouseEvent) => {
+        isMouseDown.value = true
+}
+const handleMouseUp = () => {
+        isMouseDown.value = false
+}
+
+onMounted(() => {
+    const canvasWrapperElement = document.getElementById('wrapper-canvas');
+    canvasWrapper.value = canvasWrapperElement as HTMLDivElement;
 
     renderRef.value = init(canvas?.value, engine.value, renderOptions)
 
@@ -72,9 +66,9 @@ onMounted(() => {
     let { stop, composite, render } = useRenderer(shapes, renderRef.value, engine.value)
 
     window.addEventListener('resize', () => {
-        if (canvas.value) {
-            canvas.value.width = window.innerWidth
-            canvas.value.height = window.innerHeight
+        if (canvasWrapper.value) {
+            canvasWrapper.value.width = window.innerWidth
+            canvasWrapper.value.height = window.innerHeight
         }
     })
     window.resizeBy(window.innerWidth, window.innerHeight)
@@ -82,7 +76,7 @@ onMounted(() => {
 
 const onReset =() => {
     clear(renderRef?.value, engine.value.world, engine.value)
-    init(canvas?.value, engine.value, {})
+    init(canvasWrapper?.value, engine.value, renderOptions)
 }
 
 const onPause = () => {
