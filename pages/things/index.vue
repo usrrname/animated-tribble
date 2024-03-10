@@ -41,7 +41,7 @@ onMounted(() => {
     const canvasWrapperElement = document.getElementById('wrapper-canvas');
     canvasWrapper.value = canvasWrapperElement as HTMLDivElement;
 
-    renderRef.value = init(canvas?.value, engine.value, renderOptions)
+    renderRef.value = init(canvasWrapper?.value, engine.value, renderOptions)
 
     const shelfColor = getRandomColor()
 
