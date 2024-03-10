@@ -1,7 +1,10 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
+   app: {
+    baseURL: '/animated-tribble/',
+    buildAssetsDir: 'assets',
+  },
   nitro: {
-    baseURL: process.env.PRODUCTION ? "https://usrrname.github.io/animated-tribble" : "http://localhost:3000",
     prerender: {
       crawlLinks: true,
       failOnError: false, 
